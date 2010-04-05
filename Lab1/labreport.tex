@@ -9,6 +9,8 @@
 \textwidth 6in \textheight 8 in
 % That's about enough definitions
 
+\usepackage{multirow}
+\usepackage{tabularx}
 
 \begin{document}
 %\hfill\vbox{\hbox{Gius, Mark}
@@ -43,18 +45,28 @@ a DSL modem (local ATT affiliate ISP).
 
 \section{Threat Analysis}
 
-\begin{tabular}{l || c | l}
+\begin{tabularx}{\textwidth}{| X || X | X X |}
 	\hline
-	\textbf{Threat} \\
+	\textbf{Threat} & & & \\
 	\hline
-	Power Loss & \\
-		Goals violated & List
-		\cline{2-3}
-		Vulnerability & List
-		\cline{2-3}
-		Controls & List
-		\cline {2-3}
+	\multirow{4}{*}{Power Loss}
+		& \multirow{2}{*}{Goals violated}
+			& Availability 
+				& The system is completely unavailable in the event 
+				  of a power loss \\
+			\cline{3-4}
+			& % multirow empty space
+			& Integrity 
+				& Power loss is well known to cause data corruption \\
+		\cline{2-4}
+      & Vulnerability 
+			& \multicolumn{2}{ p{7.0cm} |}{
+				Random power outage (or malicious conduct) could cause power loss
+			   to the system} \\
+		\cline{2-4}
+		& Controls & \\
+	\hline
 
-\end{tabular}
+\end{tabularx}
 
 \end{document}
