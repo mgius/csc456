@@ -11,12 +11,13 @@
 
 \usepackage{multirow}
 \usepackage{tabularx}
+\usepackage{longtable}
 
 \begin{document}
 %\hfill\vbox{\hbox{Gius, Mark}
-%		\hbox{Cpe 456, Section 01}	
-%		\hbox{Lab 1}	
-%		\hbox{\today}}\par
+%       \hbox{Cpe 456, Section 01}  
+%       \hbox{Lab 1}    
+%       \hbox{\today}}\par
 %
 %\bigskip
 %\centerline{\Large\bf Lab 1: Security Audit}\par
@@ -45,28 +46,180 @@ a DSL modem (local ATT affiliate ISP).
 
 \section{Threat Analysis}
 
-\begin{tabularx}{\textwidth}{| X || X | X X |}
-	\hline
-	\textbf{Threat} & \multicolumn{3}{l|}{} \\
-	\hline
-	\multirow{4}{*}{Power Loss}
-		& \multirow{2}{*}{Goals violated}
-			& Availability 
-				& The system is completely unavailable in the event 
-				  of a power loss \\
-			\cline{3-4}
-			& % multirow empty space
-			& Integrity 
-				& Power loss is well known to cause data corruption \\
-		\cline{2-4}
-      & Vulnerability 
-			& \multicolumn{2}{ p{7.0cm} |}{
-				Random power outage (or malicious conduct) could cause power loss
-			   to the system} \\
-		\cline{2-4}
-		& Controls & \\
-	\hline
+\begin{longtable}{| p{1.3in} || p{1in} | p{3.7in} |}
+    \hline
+    \textbf{Threat} & \multicolumn{2}{l|}{} \\
+    \hline
+    \endhead
 
-\end{tabularx}
+    \hline
+    \multicolumn{3}{|r|}{{Continued\ldots}} \\
+    \hline
+    \endfoot
+
+    \hline 
+    \endlastfoot
+
+    \multirow{3}{*}{Power Loss}
+        & Goals violated
+            & \begin{tabular}{p{1in} p{2.4in}}
+            Availability 
+                & The system is completely unavailable in the event 
+                  of a power loss \\
+            Integrity 
+                & Power loss is well known to cause data corruption \\
+            \end{tabular} \\
+        \cline{2-3}
+        & Vulnerability 
+            &  Random power outage (or malicious conduct) could cause power loss
+               to the system \\
+        \cline{2-3}
+        & Controls 
+            & \begin{tabular}{p{1in} p{2.4in}} 
+            Availability
+                & Power outages can be mitigated by attaching the server
+                  to a UPS \\
+            Integrity
+                & Steps can be taken to ensure data integrity, such as 
+                  journaling filesystems or battery backed disk cache \\
+            \end{tabular} \\
+    \hline
+    \multirow{3}{*}{Shared Network}
+        & Goals violated
+            & \begin{tabular}{p{1in} p{2.4in}}
+            Availability 
+                & A malicious or incompetent roommate can use all available
+                  resources, limiting system's access. \\
+            Confidentiality 
+                & Data on shared equipment can be snooped.\\
+            \end{tabular} \\
+        \cline{2-3}
+        & Vulnerability 
+            & Network on which computer is located is untrusted. \\
+        \cline{2-3}
+        & Controls 
+            & \begin{tabular}{p{1in} p{2.4in}} 
+            Availability
+                &  Reasonably sane QoS policies on router reduce competition
+                   for network resources. \\
+            Confidentiality 
+                & All sensitive data is sent and received via encrypted, and
+                  possibly authenticated channels (HTTPS, SSL, etc). \\
+            \end{tabular} \\
+    \hline
+    \multirow{3}{*}{Public OpenSSH}
+        & Goals violated
+            & \begin{tabular}{p{1in} p{2.4in}}
+            Availability 
+                & Compromised accounts could consume system resources or 
+                  damage services \\
+            Confidentiality 
+                & Compromised accounts could grant information to unathorized
+                  persons \\
+            Integrity 
+                & Compromised accounts could modify system configurations 
+                  and data \\
+            \end{tabular} \\
+        \cline{2-3}
+        & Vulnerability 
+            & A user account with a bad password could become compromised and
+              allow unathorized access to the system \\
+        \cline{2-3}
+        & Controls 
+            & \begin{tabular}{p{1in} p{2.4in}} 
+            General 
+                & OpenSSH is configured to disallow remote "root" login.
+                 "sshblackd" script monitors for repeated failed logins
+                 (brute force attempts) and adds IPs to a "banned" iptables
+                 chain.
+                 All admin accounts have reasonably secure passwords. \\
+            Confidentiality 
+                & Sensitive data is not publically readable via file system 
+                  permissions, so compromised non-admin accounts are prevented
+                  from accessing restricted data \\
+            Integrity
+                & Same as above, except read/write \\
+            \end{tabular} \\
+    \hline
+    \multirow{3}{*}{Theft}
+        & Goals violated
+            & \begin{tabular}{p{1in} p{2.4in}}
+            Availability 
+                & \\
+            Confidentiality 
+                & \\
+            Integrity 
+                & \\
+            \end{tabular} \\
+        \cline{2-3}
+        & Vulnerability 
+            &  \\
+        \cline{2-3}
+        & Controls 
+            & \begin{tabular}{p{1in} p{2.4in}} 
+            General 
+                & \\
+            Availability
+                & \\
+            Confidentiality 
+                & \\
+            Integrity
+                & \\
+            \end{tabular} \\
+    \hline
+    \multirow{3}{*}{}
+        & Goals violated
+            & \begin{tabular}{p{1in} p{2.4in}}
+            Availability 
+                & \\
+            Confidentiality 
+                & \\
+            Integrity 
+                & \\
+            \end{tabular} \\
+        \cline{2-3}
+        & Vulnerability 
+            &  \\
+        \cline{2-3}
+        & Controls 
+            & \begin{tabular}{p{1in} p{2.4in}} 
+            General 
+                & \\
+            Availability
+                & \\
+            Confidentiality 
+                & \\
+            Integrity
+                & \\
+            \end{tabular} \\
+    \hline
+%    \multirow{3}{*}{}
+%        & Goals violated
+%            & \begin{tabular}{p{1in} p{2.4in}}
+%            Availability 
+%                & \\
+%            Confidentiality 
+%                & \\
+%            Integrity 
+%                & \\
+%            \end{tabular} \\
+%        \cline{2-3}
+%        & Vulnerability 
+%            &  \\
+%        \cline{2-3}
+%        & Controls 
+%            & \begin{tabular}{p{1in} p{2.4in}} 
+%            General 
+%                & \\
+%            Availability
+%                & \\
+%            Confidentiality 
+%                & \\
+%            Integrity
+%                & \\
+%            \end{tabular} \\
+%    \hline
+
+\end{longtable}
 
 \end{document}
