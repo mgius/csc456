@@ -46,7 +46,7 @@ a DSL modem (local ATT affiliate ISP).
 
 \section{Threat Analysis}
 
-\begin{longtable}{| p{1.3in} || p{1in} | p{3.7in} |}
+\begin{longtable}{| p{1.0in} || p{1.0in} | p{3.5in} |}
     \hline
     \textbf{Threat} & \multicolumn{2}{l|}{} \\
     \hline
@@ -62,7 +62,7 @@ a DSL modem (local ATT affiliate ISP).
 
     \multirow{3}{*}{Power Loss}
         & Goals violated
-            & \begin{tabular}{p{1in} p{2.4in}}
+            & \begin{tabular}{p{1in} p{2.2in}}
             Availability 
                 & The system is completely unavailable in the event 
                   of a power loss \\
@@ -75,7 +75,7 @@ a DSL modem (local ATT affiliate ISP).
                to the system \\
         \cline{2-3}
         & Controls 
-            & \begin{tabular}{p{1in} p{2.4in}} 
+            & \begin{tabular}{p{1in} p{2.2in}} 
             Availability
                 & Power outages can be mitigated by attaching the server
                   to a UPS \\
@@ -86,7 +86,7 @@ a DSL modem (local ATT affiliate ISP).
     \hline
     \multirow{3}{*}{Shared Network}
         & Goals violated
-            & \begin{tabular}{p{1in} p{2.4in}}
+            & \begin{tabular}{p{1in} p{2.2in}}
             Availability 
                 & A malicious or incompetent roommate can use all available
                   resources, limiting system's access. \\
@@ -98,7 +98,7 @@ a DSL modem (local ATT affiliate ISP).
             & Network on which computer is located is untrusted. \\
         \cline{2-3}
         & Controls 
-            & \begin{tabular}{p{1in} p{2.4in}} 
+            & \begin{tabular}{p{1in} p{2.2in}} 
             Availability
                 &  Reasonably sane QoS policies on router reduce competition
                    for network resources. \\
@@ -107,9 +107,9 @@ a DSL modem (local ATT affiliate ISP).
                   possibly authenticated channels (HTTPS, SSL, etc). \\
             \end{tabular} \\
     \hline
-    \multirow{3}{*}{Public OpenSSH}
+    \multirow{3}{1.0in}{Public OpenSSH}
         & Goals violated
-            & \begin{tabular}{p{1in} p{2.4in}}
+            & \begin{tabular}{p{1in} p{2.2in}}
             Availability 
                 & Compromised accounts could consume system resources or 
                   damage services \\
@@ -126,13 +126,14 @@ a DSL modem (local ATT affiliate ISP).
               allow unathorized access to the system \\
         \cline{2-3}
         & Controls 
-            & \begin{tabular}{p{1in} p{2.4in}} 
+            & \begin{tabular}{p{1in} p{2.2in}} 
             General 
                 & OpenSSH is configured to disallow remote "root" login.
                  "sshblackd" script monitors for repeated failed logins
                  (brute force attempts) and adds IPs to a "banned" iptables
                  chain.
-                 All admin accounts have reasonably secure passwords. \\
+                 All admin accounts have reasonably secure passwords. 
+                 OpenSSH is listening on a nonstandard port. \\
             Confidentiality 
                 & Sensitive data is not publically readable via file system 
                   permissions, so compromised non-admin accounts are prevented
@@ -143,137 +144,132 @@ a DSL modem (local ATT affiliate ISP).
     \hline
     \multirow{3}{*}{Theft}
         & Goals violated
-            & \begin{tabular}{p{1in} p{2.4in}}
+            & \begin{tabular}{p{1in} p{2.2in}}
             Availability 
-                & \\
+                & A missing computer is an unavailable computer! \\
             Confidentiality 
-                & \\
-            Integrity 
-                & \\
+                & With physical access to the hardware an attacker would have
+                  full access to any data on the system. \\
             \end{tabular} \\
         \cline{2-3}
         & Vulnerability 
-            &  \\
+            & The system is small and unlocked. Any person who gains access
+              to the home (locked external door) would be able to easily take
+              the system. \\
         \cline{2-3}
         & Controls 
-            & \begin{tabular}{p{1in} p{2.4in}} 
+            & \begin{tabular}{p{1in} p{2.2in}} 
             General 
-                & \\
+                & The house is generally locked, and roommates are trustworthy. 
+                  Roommate's guests' are also generally trustworthy. Strangers
+                  in the home would be confronted by roommates (assuming 
+                  somebody was home. \\
             Availability
-                & \\
+                & A lock could be placed on the system to prevent theft. \\
             Confidentiality 
-                & \\
-            Integrity
-                & \\
+                & Whole-disk encryption with required password to unlock 
+                  would protect data. \\
             \end{tabular} \\
     \hline
-    \multirow{3}{*}{``Public'' Fileshares}
+    \multirow{3}{1.0in}{``Public'' Fileshares}
         & Goals violated
-            & \begin{tabular}{p{1in} p{2.4in}}
-            Availability 
-                & \\
+            & \begin{tabular}{p{1in} p{2.2in}}
             Confidentiality 
-                & \\
+                & Files that are not supposed to be accessible can be 
+                  made accessible, either by exploit or accidental publishing
+                  of files. \\
             Integrity 
-                & \\
+                & Read\--only shares may be written to. \\
             \end{tabular} \\
         \cline{2-3}
         & Vulnerability 
-            &  \\
+            & Samba exploits could allow access to restricted files, or allow
+              read-only shares to be written to. \\
         \cline{2-3}
         & Controls 
-            & \begin{tabular}{p{1in} p{2.4in}} 
-            General 
-                & \\
-            Availability
-                & \\
+            & \begin{tabular}{p{1in} p{2.2in}} 
             Confidentiality 
-                & \\
+                & Not much I can do here \\
             Integrity
-                & \\
+                & Or here \\
             \end{tabular} \\
     \hline
     \multirow{3}{*}{Dynamic DNS}
         & Goals violated
-            & \begin{tabular}{p{1in} p{2.4in}}
+            & \begin{tabular}{p{1in} p{2.2in}}
             Availability 
-                & \\
-            Confidentiality 
-                & \\
-            Integrity 
-                & \\
+                & If DNS service goes down, or if DNS is not updated properly,
+                  the system will be unavailable except by IP address. \\
             \end{tabular} \\
         \cline{2-3}
         & Vulnerability 
-            &  \\
+            & System is connected to the internet via a ``home'' DSL connection,
+              with a dynamically assigned IP address.  Dynamic DNS service is
+              used to provide a consistent address on the internet for the 
+              system. \\
         \cline{2-3}
         & Controls 
-            & \begin{tabular}{p{1in} p{2.4in}} 
-            General 
-                & \\
+            & \begin{tabular}{p{1in} p{2.2in}} 
             Availability
-                & \\
-            Confidentiality 
-                & \\
-            Integrity
-                & \\
+                & Choose a reliable DynDNS service. Purchase a static IP \\
             \end{tabular} \\
     \hline
-    \multirow{3}{*}{Compromised Roommates}
+    \multirow{3}{1.0in}{Compromised Roommates' PCs}
         & Goals violated
-            & \begin{tabular}{p{1in} p{2.4in}}
+            & \begin{tabular}{p{1in} p{2.2in}}
             Availability 
-                & \\
+                & Compromised PCs can consume unreasonable levels of shared
+                  resources. \\
             Confidentiality 
-                & \\
-            Integrity 
-                & \\
+                & Compromised PCs can expose ``internal''\--only resources
+                  to unathorized persons. \\
             \end{tabular} \\
         \cline{2-3}
         & Vulnerability 
-            &  \\
+            & Resources which are supposed to be ``internal'' can be exposed
+              if another machine on the network is compromised.  This bypasses
+              any rules that grant internal machies more access than an 
+              external one. \\
         \cline{2-3}
         & Controls 
-            & \begin{tabular}{p{1in} p{2.4in}} 
+            & \begin{tabular}{p{1in} p{2.2in}} 
             General 
                 & \\
             Availability
-                & \\
+                & Detect and Take down any compromised machines. \\
             Confidentiality 
-                & \\
-            Integrity
-                & \\
+                & Treat internal and external users as the same, assume that 
+                  anything published for an internal user will be accessed 
+                  by somebody on the outside. \\
             \end{tabular} \\
     \hline
     \multirow{3}{*}{IRC Bot}
         & Goals violated
-            & \begin{tabular}{p{1in} p{2.4in}}
-            Availability 
-                & \\
+            & \begin{tabular}{p{1in} p{2.2in}}
             Confidentiality 
-                & \\
+                & Exploited IRC bot could be used to gain access to 
+                  system resources. \\
             Integrity 
-                & \\
+                & Exploited IRC bot could change IRC logs or communicate as
+                  me \\
             \end{tabular} \\
         \cline{2-3}
         & Vulnerability 
-            &  \\
+            &  IRC software is probably not designed with high\--security in 
+               mind.  It is likely that the IRC client can be exploited. \\
         \cline{2-3}
         & Controls 
-            & \begin{tabular}{p{1in} p{2.4in}} 
-            General 
-                & \\
-            Availability
-                & \\
+            & \begin{tabular}{p{1in} p{2.2in}} 
             Confidentiality 
-                & \\
+                & Run the IRC bot as an unprivileged user to prevent access. \\
             Integrity
-                & \\
+                & Keep backups of the logs that the IRC user can't touch.  
+                  Although in all honesty, I really don't care. \\
             \end{tabular} \\
     \hline
 %    \multirow{3}{*}{}
 %        & Goals violated
-%            & \begin{tabular}{p{1in} p{2.4in}}
+%            & \begin{tabular}{p{1in} p{2.2in}}
 %            Availability 
 %                & \\
 %            Confidentiality 
@@ -286,7 +282,7 @@ a DSL modem (local ATT affiliate ISP).
 %            &  \\
 %        \cline{2-3}
 %        & Controls 
-%            & \begin{tabular}{p{1in} p{2.4in}} 
+%            & \begin{tabular}{p{1in} p{2.2in}} 
 %            General 
 %                & \\
 %            Availability
@@ -299,5 +295,21 @@ a DSL modem (local ATT affiliate ISP).
 %    \hline
 
 \end{longtable}
+
+\section{"Conclusions"}
+
+Overall, I would rate the risk level of this system as ``low''.  Almost all 
+of the threats evaluated are known, and are mitigated in some fashion.  The 
+only publically accessible route into the system is an OpenSSH service. 
+OpenSSH has a long (long) history of being coded by paranoid security fanatics.
+In addition, OpenSSH is listening on a non-standard port, which mitigates
+the effects of automated bots. In addition, the machine only really provides 
+one important function, that of a source code repository for myself. Because
+I recently switched from subversion to git, 
+I now have several such repositories that I sync to.
+
+The data on the system consists primarily of these repositories of 
+programs and a collection of MP3s.  These MP3s are backed up to other locations
+periodically.  
 
 \end{document}
