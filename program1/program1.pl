@@ -30,6 +30,7 @@ my $key = shift;
 $key =~ tr/[a-z]/[A-Z]/;
 $key =~ m/([^A-Z]+)/ 
    and print "key must be alphabetic only. String $1 not valid\n" and exit 1;
+my $keyLength = length $key;
 
 # pull filenames for in and out, default use STDIN/STDOUT
 my $inHandle = *STDIN;
@@ -39,13 +40,15 @@ if (@ARGV > 0) {
 }
 
 my $outHandle = *STDOUT;
-
 if (@ARGV > 0) {
    my $filename = shift;
    open($outHandle, '>', "$filename") or die $!;
 }
 
-my @lines = <$inHandle>;
+# process input, one line at a time
+while <$inHandle> {
+   tr/[a-z]/[A-Z]/; # convert line to uppercase
+}
 
 # chr = num -> char
 # ord = char -> num
