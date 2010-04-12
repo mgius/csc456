@@ -78,10 +78,13 @@ a DSL modem (local ATT affiliate ISP).
             & \begin{tabular}{p{1in} p{2.2in}} 
             Availability
                 & Power outages can be mitigated by attaching the server
-                  to a UPS \\
+                  to a UPS.  There is not currently a UPS on this system. \\
             Integrity
                 & Steps can be taken to ensure data integrity, such as 
-                  journaling filesystems or battery backed disk cache \\
+                  journaling filesystems or battery backed disk cache. A 
+                  journaling filesystem is currently in place (ext3) and 
+                  past experience has shown that the journal is reasonably
+                  effective at preventing integrity errors. \\
             \end{tabular} \\
     \hline
     \multirow{3}{*}{Shared Network}
@@ -165,10 +168,13 @@ a DSL modem (local ATT affiliate ISP).
                   in the home would be confronted by roommates (assuming 
                   somebody was home. \\
             Availability
-                & A lock could be placed on the system to prevent theft. \\
+                & A lock could be placed on the system to prevent theft. 
+                  Currently unlocked, and more valuable systems would be 
+                  higher in the priority list. \\
             Confidentiality 
                 & Whole-disk encryption with required password to unlock 
-                  would protect data. \\
+                  would protect data. Currently unused because I don't care
+                  and data on disk is not important enough to encrypt. \\
             \end{tabular} \\
     \hline
     \multirow{3}{1.0in}{``Public'' Fileshares}
@@ -191,7 +197,8 @@ a DSL modem (local ATT affiliate ISP).
             Confidentiality 
                 & Not much I can do here \\
             Integrity
-                & Or here \\
+                & Backups to another system can ensure that a valid version
+                  of the file is always available. \\
             \end{tabular} \\
     \hline
     \multirow{3}{*}{Dynamic DNS}
@@ -234,7 +241,7 @@ a DSL modem (local ATT affiliate ISP).
         & Controls 
             & \begin{tabular}{p{1in} p{2.2in}} 
             General 
-                & \\
+                & Could hold house-wide security audits. \\
             Availability
                 & Detect and Take down any compromised machines. \\
             Confidentiality 
@@ -264,7 +271,7 @@ a DSL modem (local ATT affiliate ISP).
                 & Run the IRC bot as an unprivileged user to prevent access. \\
             Integrity
                 & Keep backups of the logs that the IRC user can't touch.  
-                  Although in all honesty, I really don't care. \\
+                  I'm not doing this because I really don't care. \\
             \end{tabular} \\
     \hline
 %    \multirow{3}{*}{}
@@ -296,7 +303,7 @@ a DSL modem (local ATT affiliate ISP).
 
 \end{longtable}
 
-\section{"Conclusions"}
+\section{Conclusions}
 
 Overall, I would rate the risk level of this system as ``low''.  Almost all 
 of the threats evaluated are known, and are mitigated in some fashion.  The 
@@ -306,10 +313,25 @@ In addition, OpenSSH is listening on a non-standard port, which mitigates
 the effects of automated bots. In addition, the machine only really provides 
 one important function, that of a source code repository for myself. Because
 I recently switched from subversion to git, 
-I now have several such repositories that I sync to.
+I now have several such repositories that I sync to, so the importance of this
+machine has diminished.
 
 The data on the system consists primarily of these repositories of 
-programs and a collection of MP3s.  These MP3s are backed up to other locations
-periodically.  
+program code and a collection of MP3s.  
+These MP3s are backed up to other locations periodically, so their loss is not
+critical. 
+
+Although incompetence, maliciousness, or malfeasance on the part of my 
+roommates could cause damage to my systems, they are all generally trustworthy
+in this regard.  Between technical competence, and a ``cold-war''\--esque 
+mutually assured self-destruction, we tend to leave each other's machines 
+alone.  I take mild precautions (local firewalls, antivirus for windows,
+read\--only network shares) regardless, but I'm certain that none of my 
+roommates are sitting in their rooms trying to hack me.  They might as well
+walk into my room and steal the hardware.
+
+In short: nothing particularly sensitive or important,
+the only write-only access is via OpenSSH, which is coded by paranoid 
+security experts, and reasonably trustworthy roommates.
 
 \end{document}
