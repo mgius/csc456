@@ -21,6 +21,7 @@ my $period = exists($opts{p}) ? $opts{p} : 0;
 $skip =~ m/^\d+$/ or print "Invalid skip value \"$skip\"\n" and exit 1;
 $period =~ m/^\d+$/ or print "Invalid period value \"$period\"\n" and exit 1;
 
+# you have failed to provide a key
 if (@ARGV < 1) {
    _usage();
 }
@@ -50,6 +51,7 @@ if (@ARGV > 0) {
    open($outHandle, '>', "$filename") or die $!;
 }
 
+# converts a single character
 sub convert {
 	my $shift = shift @keyArray;
    my $char = ord(shift);
@@ -73,7 +75,5 @@ while (<$inHandle>) {
    }
 }
 
-# chr = num -> char
-# ord = char -> num
-
+# cleanup :D
 $outHandle eq *STDOUT or close($outHandle);
