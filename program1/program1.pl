@@ -10,8 +10,9 @@ sub _usage() {
 }
 
 my %opts;
-getopts('vs:p:', \%opts);
+getopts('vds:p:', \%opts);
 
+my $decode = exists($opts{d}) ? -1 : 1; # enables decryption
 my $verbose = exists($opts{v}); # currently does nothing
 my $skip = exists($opts{s}) ? $opts{s} : 0;
 my $period = exists($opts{p}) ? $opts{p} : 0;
@@ -25,13 +26,16 @@ if (@ARGV < 1) {
 }
 
 my $key = shift;
-my @keyArray = split(//, $key);
-
 # toUpper and verify alpha only
 $key =~ tr/[a-z]/[A-Z]/;
 $key =~ m/([^A-Z]+)/ 
    and print "key must be alphabetic only. String $1 not valid\n" and exit 1;
-my $keyLength = length $key;
+
+my @keyArray;
+for my $magic (split(//, $key)) {
+	push @keyArray, $decode * (ord($magic) - ord('A'));
+}
+
 
 # pull filenames for in and out, default use STDIN/STDOUT
 my $inHandle = *STDIN;
@@ -46,26 +50,25 @@ if (@ARGV > 0) {
    open($outHandle, '>', "$filename") or die $!;
 }
 
-my $pos = 0;
 sub convert {
+	my $shift = shift @keyArray;
    my $char = ord(shift);
-   $char += ord($keyArray[$pos]);
+   $char += $shift;
    if ($char > ord('Z')) { $char -= 26; }
-   $pos = ($pos + 1) % $keyLength;   
+	if ($char < ord('A')) { $char += 26; }
+	push @keyArray, $shift;
    return chr($char);
-   
 }
 
 # process input, one line at a time
 while (<$inHandle>) {
-   print;
    tr/[a-z]/[A-Z]/; # convert line to uppercase
-   foreach my $char ($_) {
+   foreach my $char (split(//, $_)) {
       if ($char =~ m/[A-Z]/) {
          print convert($char);
       }
       else {
-         print "Bad Char: " . $char . "\n";
+         print $char;
       }
    }
 }
