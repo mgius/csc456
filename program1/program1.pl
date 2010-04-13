@@ -5,7 +5,7 @@ use Getopt::Std;
 
 # copied from spec
 sub _usage() {
-   print "usage: $1 [ -v] [ -d] key [infile [ outfile ] ]\n";
+   print "usage: $0 [ -v] [ -d] key [infile [ outfile ] ]\n";
    exit 1;
 }
 
@@ -25,6 +25,7 @@ if (@ARGV < 1) {
 }
 
 my $key = shift;
+my @keyArray = split(//, $key);
 
 # toUpper and verify alpha only
 $key =~ tr/[a-z]/[A-Z]/;
@@ -45,9 +46,28 @@ if (@ARGV > 0) {
    open($outHandle, '>', "$filename") or die $!;
 }
 
+my $pos = 0;
+sub convert {
+   my $char = ord(shift);
+   $char += ord($keyArray[$pos]);
+   if ($char > ord('Z')) { $char -= 26; }
+   $pos = ($pos + 1) % $keyLength;   
+   return chr($char);
+   
+}
+
 # process input, one line at a time
-while <$inHandle> {
+while (<$inHandle>) {
+   print;
    tr/[a-z]/[A-Z]/; # convert line to uppercase
+   foreach my $char ($_) {
+      if ($char =~ m/[A-Z]/) {
+         print convert($char);
+      }
+      else {
+         print "Bad Char: " . $char . "\n";
+      }
+   }
 }
 
 # chr = num -> char
