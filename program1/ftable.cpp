@@ -3,12 +3,17 @@
 #include <map>
 #include <stdio.h>
 #include <string>
+#include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 using namespace std;
+
+inline int max(int a, int b) {
+   return a > b ? a : b;
+}
 
 void usage(void) {
    printf("usage: ftable [ -v ] [ -s num ] [-p num ] [ infile [ outfile ] ]\n");
@@ -18,7 +23,7 @@ void usage(void) {
 int main(int argc, char **argv) {
    bool verbose = false;
    int skip = 0;
-   int period = 0;
+   int period = 1;
    int inFd = STDIN_FILENO, outFd = STDOUT_FILENO;
 
    // Cmdline parsing
@@ -69,6 +74,26 @@ int main(int argc, char **argv) {
          usage();
       }
    }
+
+   // main loop
+   int count = 0;
+   int curPeriod = 0;
+   int table[26];
+   char *inBuf = malloc(max3(period, skip) * sizeof(char));
+   memset(&table, 0, sizeof(int) * 26);
+
+   // eat "skip" bytes
+   if (!skip) {
+      read(inFd, inBuf, skip);
+   }
+   while (!read(inFd, inBuf, period)) {
+      // I only care about the first byte
+      table[inBuf[0] - 'A']++;
+   }
+   int i = read(inFd, &curChar, 1);
+   printf("%c\n", curChar);
+
+
 
    if (inFd != STDIN_FILENO) {
       close(inFd);

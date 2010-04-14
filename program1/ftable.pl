@@ -14,7 +14,7 @@ my %opts;
 getopts('vs:p:', \%opts);
 my $verbose = exists($opts{v}); # currently does nothing
 my $skip = exists($opts{s}) ? $opts{s} : 0;
-my $period = exists($opts{p}) ? $opts{p} : 0;
+my $period = exists($opts{p}) ? $opts{p} : 1;
 
 # validate options
 $skip =~ m/^\d+$/ or print "Invalid skip value \"$skip\"\n" and exit 1;
@@ -45,8 +45,8 @@ while (<$inHandle>) {
    foreach my $char (split(//, $_)) {
       if ($char =~ m/[A-Z]/) {
          $skip-- and next if $skip != 0;
-         $curPeriod++ and next if $curPeriod != $skip;
-         $curPeriod = 0;
+         $curPeriod++ and next if $curPeriod != $period;
+         $curPeriod = 1;
 
          $table{$char}++;
          $count++;
