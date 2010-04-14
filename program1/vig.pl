@@ -10,16 +10,10 @@ sub _usage() {
 }
 
 my %opts;
-getopts('vds:p:', \%opts);
+getopts('vdp:', \%opts);
 
 my $decode = exists($opts{d}) ? -1 : 1; # enables decryption
 my $verbose = exists($opts{v}); # currently does nothing
-my $skip = exists($opts{s}) ? $opts{s} : 0;
-my $period = exists($opts{p}) ? $opts{p} : 0;
-
-# validate options
-$skip =~ m/^\d+$/ or print "Invalid skip value \"$skip\"\n" and exit 1;
-$period =~ m/^\d+$/ or print "Invalid period value \"$period\"\n" and exit 1;
 
 # you have failed to provide a key
 if (@ARGV < 1) {
