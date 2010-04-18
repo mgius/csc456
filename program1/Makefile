@@ -1,7 +1,7 @@
 all: ftable vig
 
 ftable: ftable.cpp
-	g++ ftable.cpp -o ftable
+	g++ -g ftable.cpp -lm -o ftable
 
 vig:
 

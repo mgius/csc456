@@ -1,6 +1,6 @@
-#include <errno.h>
+#include <ctype.h> // isAlpha
 #include <fcntl.h>
-#include <map>
+#include <math.h> // ceil
 #include <stdio.h>
 #include <string>
 #include <string.h>
@@ -11,9 +11,7 @@
 
 using namespace std;
 
-inline int max(int a, int b) {
-   return a > b ? a : b;
-}
+#define BUFSIZE 1024
 
 void usage(void) {
    printf("usage: ftable [ -v ] [ -s num ] [-p num ] [ infile [ outfile ] ]\n");
@@ -40,12 +38,20 @@ int main(int argc, char **argv) {
          if (temp != argv[i] + string(argv[i]).length()) {
             usage();
          }
+         // verify valid skip
+         if (skip < 0) {
+            usage();
+         }
       }
       else if (!arg.compare("-p")) {
          char *temp;
          period = strtol(argv[++i], &temp, 10); 
          // Check for a bad strtol. Probably a more efficient way to do this
          if (temp != argv[i] + string(argv[i]).length()) {
+            usage();
+         }
+         // verify that period is 1 or greater
+         if (period < 1) {
             usage();
          }
       }
@@ -76,24 +82,43 @@ int main(int argc, char **argv) {
    }
 
    // main loop
-   int count = 0;
-   int curPeriod = 0;
+   int validChars = 0;
+   int curPeriod = 1;
    int table[26];
-   char *inBuf = malloc(max3(period, skip) * sizeof(char));
+   char *inBuf = (char *) malloc(BUFSIZE);
    memset(&table, 0, sizeof(int) * 26);
+   int bytesRead = 0;
 
-   // eat "skip" bytes
-   if (!skip) {
-      read(inFd, inBuf, skip);
+   while (0 != (bytesRead = read(inFd, inBuf, BUFSIZE))) {
+      for (int i = 0; i < bytesRead; i++) {
+         // eat letters until skip is done
+         if (skip && isalpha(inBuf[i])) {
+            --skip;
+         }
+         // valid letter and time to count a letter
+         else if (curPeriod == 1 && isalpha(inBuf[i])) {
+            table[toupper(inBuf[i]) - 'A']++;
+            printf("Found a %c\n", toupper(inBuf[i]));
+            ++validChars;
+            curPeriod = period;
+         }
+         // valid char, need to skip though
+         else if (isalpha(inBuf[i])) {
+            --curPeriod;
+         }
+      }
    }
-   while (!read(inFd, inBuf, period)) {
-      // I only care about the first byte
-      table[inBuf[0] - 'A']++;
+
+   for (int i = 0; i < 26; i++) {
+      string hist("");
+      for (int j = 0; 
+            j < (int) (table[i] * 100.0 / validChars); j++) {
+         hist += '*';
+      }
+      printf("%c: %9d ( %05.2f%%) %s\n", 'A' + i, table[i], 
+                                         table[i] * 100.0 / validChars,
+                                         hist.c_str());
    }
-   int i = read(inFd, &curChar, 1);
-   printf("%c\n", curChar);
-
-
 
    if (inFd != STDIN_FILENO) {
       close(inFd);

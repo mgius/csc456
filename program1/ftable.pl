@@ -17,8 +17,10 @@ my $skip = exists($opts{s}) ? $opts{s} : 0;
 my $period = exists($opts{p}) ? $opts{p} : 1;
 
 # validate options
-$skip =~ m/^\d+$/ or print "Invalid skip value \"$skip\"\n" and exit 1;
-$period =~ m/^\d+$/ or print "Invalid period value \"$period\"\n" and exit 1;
+$skip =~ m/^\d+$/ and $skip >= 0 
+	or print "Invalid skip value \"$skip\"\n" and exit 1;
+$period =~ m/^\d+$/ and $period >= 1
+	or print "Invalid period value \"$period\"\n" and exit 1;
 
 # pull filenames for in and out, default use STDIN/STDOUT
 my $inHandle = *STDIN;
@@ -63,5 +65,7 @@ foreach my $key (sort(keys %table)) {
    for (1..ceil($table{$key} / $count * 100)) {
       $hist .= "*";
    }
-   print sprintf("%s: %9d ( %05.2f%%) %s\n", $key, $table{$key}, $table{$key} / $count * 100, $hist);
+   print sprintf("%s: %9d ( %05.2f%%) %s\n", $key, $table{$key}, 
+															$table{$key} / $count * 100, 
+															$hist);
 }
