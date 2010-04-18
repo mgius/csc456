@@ -27,7 +27,6 @@ int main(int argc, char **argv) {
    // Cmdline parsing
    for (int i=1; i < argc; i++) {
       string arg(argv[i]);
-      printf("%s\n", arg.c_str());
       if (!arg.compare("-v")) {
          verbose = true;
       }
@@ -59,7 +58,6 @@ int main(int argc, char **argv) {
          usage();
       }
       else if (inFd == STDIN_FILENO) {
-         printf("infile: %s\n", arg.c_str());
          inFd = open(arg.c_str(), O_RDONLY);
          if (-1 == inFd) {
             perror("input file");
@@ -98,7 +96,6 @@ int main(int argc, char **argv) {
          // valid letter and time to count a letter
          else if (curPeriod == 1 && isalpha(inBuf[i])) {
             table[toupper(inBuf[i]) - 'A']++;
-            printf("Found a %c\n", toupper(inBuf[i]));
             ++validChars;
             curPeriod = period;
          }
@@ -108,6 +105,7 @@ int main(int argc, char **argv) {
          }
       }
    }
+   free(inBuf);
 
    for (int i = 0; i < 26; i++) {
       string hist("");
