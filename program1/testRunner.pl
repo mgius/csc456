@@ -15,3 +15,5 @@ while(@testArray) {
    }
    $input = $output;
 }
+
+close(TESTCASE);
