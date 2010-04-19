@@ -15,8 +15,10 @@ test: all
 	sh runAllTests.sh
 
 clean:
-	rm -f vig ftable
+	rm -f vig ftable tests.tar
 
-handin: all
+testtar:
 	tar -cf tests.tar runAllTests.sh testRunner.pl testcases/
+
+handin: all testtar test
 	handin $(HANDINACCT) $(HANDINDIR) $(HANDINFILES)
