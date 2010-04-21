@@ -1,0 +1,76 @@
+\documentclass[11pt]{article}
+
+% Use wide margins, but not quite so wide as fullpage.sty
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth 6in \textheight 8 in
+% That's about enough definitions
+
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{longtable}
+
+\begin{document}
+\author{Mark Gius}
+\title{Lab 2: Cryptography Exercises}
+\maketitle
+
+\begin{enumerate}
+
+\item % Problem 1: Decode this string
+\begin{tabular}{p{3cm} p{1cm} p{8cm}}
+\begin{verbatim}
+    S P I E A
+    B C D F G
+    H K L M N
+    O Q R T U
+    V W X Y Z
+\end{verbatim} & &
+\begin{verbatim}
+OMEUP ADQFY VTOZS FIYAM NZIUL DUNEP MV
+THATS ECRET YOUVE BXEEN GUARD INGIS NT
+\end{verbatim}
+The ``X'' in ``BEEN'' is a padded character to force the message to be an 
+even number of characters
+\end{tabular}
+
+\item % Problem 2: # of keys
+I am assuming that the term ``Classical Cryptosystem'' refers to a system where
+the same key is used to encrypt and decrypt messages.
+
+Assuming that each person wants to communicate securely with everybody else,
+and each person is willing to send a separately encrypted message if a message
+needs to be sent to more than one person, then there will need to be one key
+for each unique pairing.  This works out to 
+\[\frac{(m-1) m}{2}\]
+which also happens to be the number of edges in a fully connected graph 
+with $m$ nodes.
+
+If sending multiple copies of a message is disallowed, this increases the
+number of keys required.  For every possible group of persons greater than 2,
+a key is required.  Looking up the equation for $m$ choose $k$ gives me
+
+\[\frac{m!}{k!(m-k)!}\]
+
+So now I'll just sum all of the possible groupings for a group of size m
+
+\[
+\sum_{k=2}^{m} \frac{m!}{k!(m-k)!}
+\]
+
+Running the numbers for a group of size 4, I get $6 + 4 + 1 = 11$ keys to 
+allow every combination of persons to securely communicate amongst each other.
+
+\item % what if #2 was PKI
+
+If the group of people in problem 2 were allowed to use a public key 
+cryptosystem, the number of keys required would be $m * 2$. Each person would
+need their own Public key and their own Private key.
+
+
+\end{enumerate}
+
+\end{document}
