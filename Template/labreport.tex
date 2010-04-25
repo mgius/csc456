@@ -9,68 +9,15 @@
 \textwidth 6in \textheight 8 in
 % That's about enough definitions
 
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{longtable}
 
 \begin{document}
-\hfill\vbox{\hbox{Blow, Joe}
-		\hbox{Cpe 453, Section 02}	
-		\hbox{Lab 2}	
-		\hbox{\today}}\par
+\author{Mark Gius}
+\title{Lab 1: Security Audit}
+\maketitle
 
-\bigskip
-\centerline{\Large\bf Lab 2: Minix Scavenger Hunt}\par
-\bigskip
-
-This is the template I passed out in the lab (well, slightly 
-modified).  It works reasonably well to have each step of the
-lab be a {\textbackslash section} and each component below it
-a {\textbackslash subsection}.  For the ``problem set'' labs
-an {\tt enumerate} environment is probably more appropriate.
-
-
-\setcounter{section}{1} % make the first section, section 2(see below)
-\section{Logging in}
-
-This example is actually the second step in this lab so I had
-to change the section number to match.  If you want to
-set section numbers, you can do so with 
-\verb+\setcounter{section}{+$n${\tt \}}.  Set $n$ to be one less
-than you want it to be.
-
-
-\subsection{Approach}
-  The login procedure is to enter the username at the ``{\tt login:}''
-prompt followed by the password at the ``{\tt password:}'' prompt.
-The username for the user account I created is ``{\tt pnico}''.  The
-password is not recorded here for obvious reasons.
-
-\subsection{Problems Encountered}
-
-  I was distracted and hit too many returns to wake up the terminal, 
-ended up entering the login name at the password prompt, and typing
-my password at the following login prompt:
-
-{\tt\begin{tabbing}
-login:\\
-password: pnico\\
-\\
-login: $<${\it password withheld}$>$\\
-password:
-\end{tabbing}}
-
-\subsection{Solutions}
-
-  The solution was to re-enter my login name and password at the
-  appropriate prompts.  I also checked to see if the bad login
-  had been logged to {\tt /usr/adm/log}, because that would have
-  been a security risk.  On this system bad logins are not logged,
-  so there was no breach.
-
-\subsection{Lessons Learned}
-
-  In this section I learned to pay attention while logging in to
-the machine.  I also learned how hard it is to come up with bogus
-problems having to do with logging in.  (Forgetting that {\sc Unix} is
-case sensitive is more likely.  Still more likely is ``none'' for
-this particular task.)
+\section{System Description}
 
 \end{document}
