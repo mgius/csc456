@@ -1,7 +1,7 @@
 HANDINACCT = pn-cs456
 HANDINDIR = Asgn1
 HANDINFILES = "ftable.cpp ftable.pl Makefile tests.tar vig.cpp vig.pl"
-CXXFLAGS = -Wall
+CXXFLAGS = -Wall -ansi
 all: ftable vig
 
 ftable: ftable.cpp
@@ -10,7 +10,7 @@ ftable: ftable.cpp
 vig: vig.cpp
 	g++ $(CXXFLAGS) vig.cpp -o vig
 
-test: all
+test: all testtar
 	tar -xf tests.tar
 	sh runAllTests.sh
 

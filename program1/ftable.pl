@@ -1,4 +1,15 @@
 #! /usr/bin/perl
+#  Mark Gius
+#  Program 1: ftable (in perl)
+#  CSC456
+#  Frequency analysis program for attacking ciphertexts
+#
+#  This version is not intended to be graded.  I was just mildly offended
+#  that you didn't include perl as real language
+#
+#  Somewhat less readable than the C++ version, but strict/warnings 
+#  makes it considerably more readable than your average perl script.
+
 use strict;
 use warnings;
 use Getopt::Std;
@@ -10,6 +21,7 @@ sub _usage() {
    exit 1;
 }
 
+# option parsing
 my %opts;
 getopts('vs:p:', \%opts);
 my $verbose = exists($opts{v}); # currently does nothing
@@ -42,6 +54,8 @@ my %table;
 for my $char ("A".."Z") { # can't believe this works
    $table{$char} = 0;
 }
+
+# loop over input
 while (<$inHandle>) {
    tr/[a-z]/[A-Z]/; # map to uppercase
    foreach my $char (split(//, $_)) {
@@ -59,7 +73,6 @@ while (<$inHandle>) {
    }
 }
 
-
 foreach my $key (sort(keys %table)) {
    my $hist = "";
    for (1..ceil($table{$key} / $count * 100)) {
@@ -69,3 +82,7 @@ foreach my $key (sort(keys %table)) {
 															$table{$key} / $count * 100, 
 															$hist);
 }
+
+# cleanup :D
+$inHandle eq *STDIN or close($inHandle)
+$outHandle eq *STDOUT or close($outHandle);

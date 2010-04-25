@@ -1,4 +1,14 @@
 #! /usr/bin/perl
+#  Mark Gius
+#  Program 1: vig (in perl)
+#  CSC456
+#  Vigenere Enciphering / Deciphering
+#
+#  This version is not intended to be graded.  I was just mildly offended
+#  that you didn't include perl as real language
+#
+#  Somewhat less readable than the C++ version, but strict/warnings 
+#  makes it considerably more readable than your average perl script.
 use strict;
 use warnings;
 use Getopt::Std;
@@ -9,6 +19,7 @@ sub _usage() {
    exit 1;
 }
 
+# option parsing
 my %opts;
 getopts('vdp:', \%opts);
 
@@ -45,7 +56,7 @@ if (@ARGV > 0) {
    open($outHandle, '>', "$filename") or die $!;
 }
 
-# converts a single character
+# converts a single character uses Key array like a circular queue
 sub convert {
 	my $shift = shift @keyArray;
    my $char = ord(shift);
@@ -64,10 +75,11 @@ while (<$inHandle>) {
          print convert($char);
       }
       else {
-         print $char;
+         print $outHandle, $char;
       }
    }
 }
 
 # cleanup :D
+$inHandle eq *STDIN or close($inHandle)
 $outHandle eq *STDOUT or close($outHandle);
