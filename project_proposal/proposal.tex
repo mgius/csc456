@@ -1,0 +1,72 @@
+\documentclass[11pt]{article}
+
+\usepackage{fullpage} % does reasonable things
+% Use wide margins, but not quite so wide as fullpage.sty
+%\marginparwidth 0.5in 
+%\oddsidemargin 0.25in 
+%\evensidemargin 0.25in 
+%\marginparsep 0.25in
+%\topmargin 0.25in 
+%\textwidth 6.5in \textheight 9.0in
+% That's about enough definitions
+
+%\usepackage{multirow}
+%\usepackage{tabularx}
+%\usepackage{longtable}
+
+%\begin{document}
+%\author{Mark Gius}
+%\title{Project Proposal: ``Frozen'' Linux Deployments}
+%\maketitle
+\begin{document}
+\hfill\vbox{\hbox{Gius, Mark}
+            \hbox{Cpe 456, Section 01} 
+            \hbox{Project Proposal}   
+            \hbox{\today}}\par
+
+\bigskip
+\centerline{\Large\bf Project Proposal: ``Frozen'' Linux Deployments}\par
+\bigskip
+
+\section{Introduction}
+I propose to implement a system that prevents any changes to disk from
+persisting across system reboot. Such a system would be extremely resistant to
+damage by incompetence, and moderately resistent to damage by malice.  In this
+way, we can create a system that can be safely given to untrusted individuals
+without compromising the integrity of the system.
+
+\section{Implementation and Scope}
+I intend to use a combination of tools to modify a linux system to prevent
+local changes from persisting after a reboot, without reinstalling or
+reimaging the system.
+
+This implementation is not meant to be bulletproof.  Because my implementation
+will be primarily be in userspace, a user with superuser priviledges will
+still be able to manipulate local resources via the block devices in /dev. A
+more robust implementation could be implemented as a kernel module that
+catches calls to block devices and redirects them to other block devices rather 
+than overlaying a temporary filesystem over the root filesystem.
+
+Ideally, this implementation could be used to ``secure'' systems that are to
+be given to users who require moderate amounts of administrative power.
+Examples include access to install packages or manipulate audio devices
+directly.  As long as these users do not gain access to the block devices for
+the local disks any damage they may cause would be transient. 
+
+\section{Similar Implementations}
+I am aware of two similar implementations of ``frozen'' operating system 
+deployments.  
+
+The first is a proprietary product sold by 
+Faronics\footnote{http://www.faronics.com} called ``Deep Freeze.'' The software is
+available for Windows, OSX, and Linux, although I have only seen it in use on
+the Windows platform. 
+
+The second implementation can be found on almost every Linux ``LiveCD.'' When
+the operating system on the CD is loaded, the filesystem on the CD is merged
+with a read/write filesystem that is resident in RAM, allowing the user to
+``write'' files and change settings on the system.  These changes do not
+persist, and the system is immutable because the media that the system files
+are loaded from is read-only.  
+
+\end{document}
