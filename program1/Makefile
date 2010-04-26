@@ -1,7 +1,8 @@
 HANDINACCT = pn-cs456
 HANDINDIR = Asgn1
-HANDINFILES = "ftable.cpp ftable.pl Makefile tests.tar vig.cpp vig.pl"
+HANDINFILES = "ftable.cpp ftable.pl Makefile tests.tar vig.cpp vig.pl README"
 CXXFLAGS = -Wall -ansi
+
 all: ftable vig
 
 ftable: ftable.cpp
