@@ -23,3 +23,9 @@ testtar:
 
 handin: all testtar test
 	handin $(HANDINACCT) $(HANDINDIR) $(HANDINFILES)
+	make handincheck
+	make clean
+
+handincheck:
+	handin $(HANDINACCT) $(HANDINDIR)
+	
