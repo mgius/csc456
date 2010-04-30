@@ -70,6 +70,28 @@ If the group of people in problem 2 were allowed to use a public key
 cryptosystem, the number of keys required would be $m * 2$. Each person would
 need their own Public key and their own Private key.
 
+\item % untrustworthy investors and stockbrokers
+
+With public key cryptography (and sufficiently strong keys), we can be 
+absolutely certain which person sent the messages.  Let us assume that all
+keys are sufficiently long that they cannot be trivially cracked, and that
+none of the private keys have been compromised. 
+
+Let us assume that the stockbrocker, Sally, is trying to boost his numbers by
+ordering stocks in the name of the investor, Ian.  If the investment firm's
+policy states that purchases can only be made by email signed by an investor,
+then we can easily determine whether or not Ian sent the order.  Because a
+message signed with one person's private key can only be decrypted by their
+public key, any orders that the stockbroker acts on must be decrypted using
+the public key.  Orders that are signed by any key other than Ian's private
+key will not decrypt using his public key, and Ian can plausibly deny having
+sent that order. 
+
+In the case where the investor has lost money and is trying to deny having
+sent the buy order, we can use the same policy as above to provide proof of an
+order having been requested.  Since only Ian can sign messages using his
+private key, any orders that can be succesfully decrypted using Ian's public
+key can be proven to have originated from him.
 
 \end{enumerate}
 
