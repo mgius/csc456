@@ -1,10 +1,16 @@
 Mark Gius
+Program 2
 
-No special instructions
+No Special instructions
 
-There's a perl version which you aren't expected to grade (or even look at),
-but it's more elegant in some respects than the C++ version and was the 
-version I developed first, so any odd design decisions in the C++ version
-may be related to the fact that I developed the perl version first.
+I spologize for the awful conventions around output in kasiski.  I haven't
+done stream IO in C since 101, and when I tried to make it work, it spit on me
+so I went back to write(2).  
 
-Also, perl is awesome.
+I wasn't able to crack my hard after an hour of putzing around.  Somebody 
+mentioned that their hard one was "easy," so I cracked his and made the
+assumption that my text was from the same source.  Lo and behold, there's a 
+9 in my input, and there's only one 9 in the source.  Done and Done.
+
+Comparing my "assume everything is an e" result to the actual key, I only
+matched 3 of the 5, so it was pretty much noise is far as I could tell.

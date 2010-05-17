@@ -1,6 +1,6 @@
 HANDINACCT = pn-cs456
 HANDINDIR = Asgn2
-HANDINFILES = "ftable.cpp Makefile vig.cpp README"
+HANDINFILES = "*.cpp Makefile *.h README key.* mgius.*"
 CXXFLAGS = -Wall -ansi -O2
 
 all: ftable vig ic kasiski
@@ -22,3 +22,8 @@ clean:
 
 handin: all
 	handin $(HANDINACCT) $(HANDINDIR) $(HANDINFILES)
+	make handincheck
+	make clean
+
+handincheck:
+	handin $(HANDINACCT) $(HANDINDIR)
