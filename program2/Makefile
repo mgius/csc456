@@ -14,8 +14,11 @@ vig: vig.cpp
 ic: icMain.o ic.o
 	g++ $(CXXFLAGS) $^ -o ic
 
+kasiski: kasiski.o
+	g++ $(CXXFLAGS) $^ -o kasiski
+
 clean:
-	rm -f vig ftable ic *.o
+	rm -f vig ftable ic kasiski *.o
 
 handin: all
 	handin $(HANDINACCT) $(HANDINDIR) $(HANDINFILES)

@@ -5,28 +5,40 @@
  */
 
 #include <ctype.h> // isAlpha
-#include <fcntl.h>
-#include <math.h> // ceil
-#include <stdio.h>
+#include <stdio.h> // printf, fread, fwrite
 #include <string>
 #include <string.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include <stdlib.h> // malloc
 #include <unistd.h>
 
 #include "ic.h"
 using namespace std;
 
-// 1K buffer is reasonable for all but the most restrictive embedded systems
-// and if you're cracking ciphertexts on embedded systems why are you using
-// my code anyway?
-#define BUFSIZE 1024
-
 void usage(void) {
-   printf("usage: kasiski [ -v ] [-m length] [ infile [ outfile ] ]\n");
+   printf("usage: kasiski [ -v ] [ -m length] [ infile [ outfile ] ]\n");
    exit(1);
 }
+
+
+#define BUFSIZE 1024
+/* reads and normalizes input 
+ * returns count of valid characters in sanitized 
+ *
+ * sanitized pointer will be overwritten 
+ * */
+int readInput(FILE *inFile, char **sanitized) {
+   char *buf = (char *) malloc(BUFSIZE);
+   *sanitized = (char *) calloc(1, BUFSIZE * 4);
+   int validChars = 0, bytesRead = 0, saniLen = BUFSIZE * 4;
+
+   while (0 != (bytesRead = fread(buf, BUFSIZE, 1, inFile))) {
+      for (int i = 0; i < bytesRead; i++) {
+         if (isalpha(buf[i])) {
+         }
+      }
+   }
+}
+
 
 int main(int argc, char **argv) {
    bool verbose = false;
