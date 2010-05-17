@@ -38,7 +38,7 @@ struct matchRecord {
 			return str.length() > other.str.length();
 		}
 		if (locations.size() != other.locations.size()) {
-			return locations.size() < other.locations.size();
+			return locations.size() > other.locations.size();
 		}
 		return str < other.str;
 	}
@@ -65,7 +65,7 @@ int readInput(int inFd, char **sanitized) {
 	   char cur = buf[0];
       for (int i = 0; i < bytesRead; i++, cur = buf[i]) {
          if (isalpha(cur)) {
-				if (validChars <= saniLen) {
+				if (validChars >= saniLen) {
 					saniLen *= 2;
 					*sanitized = (char *) realloc(*sanitized, saniLen);
 					if (NULL == *sanitized) {
@@ -78,6 +78,7 @@ int readInput(int inFd, char **sanitized) {
          }
       }
    }
+   free(buf);
 	return validChars;
 }
 
@@ -110,6 +111,7 @@ bool findMatchesOfLength(char *begin, int keySize) {
 				}
 				// add the found location
 				matches[string(match)].insert(j);
+            j += keySize - 1;
 			}
 		}
 	}
