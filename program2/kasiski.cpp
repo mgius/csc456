@@ -6,12 +6,13 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 
 #include <ctype.h> // isAlpha, toupper
 #include <fcntl.h> // open
 #include <stdio.h> // printf, fread, fwrite
-#include <string.h>
+#include <string.h> // strncmp, strlen
 #include <stdlib.h> // malloc
 #include <sys/stat.h> // open
 #include <sys/types.h> // open
@@ -22,22 +23,25 @@ using namespace std;
 
 // map from string to list of locations, which contains all the
 // information I need to keep track of, but I can't sort it properly!
-map<string, list<int> > matches;
+map<string, set<int> > matches;
 
 // Enter the matchRecord, which I can sort properly
 struct matchRecord {
 	string str;
-	list<int> locations;
+	set<int> locations;
+
+	matchRecord(string s, set<int> locs) : str(s), locations(locs) {}
 
 	bool operator<(matchRecord &other) {
 		if (str.length() != other.str.length()) {
-			return str.length() < other.str.length();
+			return str.length() > other.str.length();
 		}
 		if (locations.size() != other.locations.size()) {
 			return locations.size() < other.locations.size();
 		}
 		return str < other.str;
 	}
+
 };
 
 void usage(void) {
@@ -76,6 +80,59 @@ int readInput(int inFd, char **sanitized) {
 	return validChars;
 }
 
+/* finds all matches of a particular keySize, returns
+ * true if at least one match was found
+ */
+bool findMatchesOfLength(char *begin, int keySize) {
+	bool result = false;
+	char match[keySize + 1];
+	match[keySize] = '\0';
+
+	// loop from first char to two key lengths from the end
+	for (unsigned int i = 0; i <= strlen(begin) - keySize * 2; i++) {
+		bool foundOne = false;
+		// loop til the end of the cipher minus one key length
+		for (unsigned int j = i + keySize; j <= strlen(begin) - keySize; j++) {
+			if (0 == strncmp(begin + i, begin + j, keySize)) {
+				result = true;
+				//printf("Found a match at positions %d and %d\n", i, j);
+				if(!foundOne) {
+					// first time finding this string.  initialize.
+					// copy out the substring we care about, and shove the 
+					// initial location into the map
+					strncpy(match, begin + i, keySize);
+
+					//// need to add the first location
+					matches[string(match)].insert(i);
+					foundOne = true;
+				}
+				// add the found location
+				matches[string(match)].insert(j);
+			}
+		}
+	}
+
+	return result;
+}
+
+/* converts the map to the list of structs */
+void convertMapToList(list<matchRecord> *matchList) {
+	map<string, set<int> >::iterator it;
+	for (it=matches.begin(); it != matches.end(); it++) {
+		matchList->push_back(matchRecord((*it).first, (*it).second));
+	}
+	matchList->sort();
+}
+
+/* Some of this code is kind of ganky as a result of me using write(2)
+ * instead of the fprintf and FILE*
+ */
+void printOutput(int outFd, list<matchRecord> &matchList) {
+	string header("Length   Count  Word    Location (distance)\n");
+	header +=     "======   =====  ====    =========\n";
+	write(outFd, header.c_str(), header.length());
+}
+
 int main(int argc, char **argv) {
    bool verbose = false;
    int minLength = 3;
@@ -84,6 +141,7 @@ int main(int argc, char **argv) {
    int inFd = STDIN_FILENO, outFd = STDOUT_FILENO;
 	char *sanitizedInput = NULL;
 	int charCount = 0;
+	list<matchRecord> matchList;
 
    // Cmdline parsing
    for (int i=1; i < argc; i++) {
@@ -136,6 +194,20 @@ int main(int argc, char **argv) {
 	// Read in the chiphertext, stripping out invalid chars and 
 	// mapping to uppercase
 	charCount = readInput(inFd, &sanitizedInput);
+
+	// This probably violates a coding style, but I like it
+	for(int i = minLength; findMatchesOfLength(sanitizedInput, i); i++) {}
+
+	// convert the map to the list
+	convertMapToList(&matchList);
+
+	printOutput(outFd, matchList);
+	// This is the part where not using FILE * is going to bite me
+	for(list<matchRecord>::iterator it = matchList.begin();
+		 it != matchList.end();
+		 it++) {
+		
+	}
 
    // clean up file descriptors
    if (inFd != STDIN_FILENO) {

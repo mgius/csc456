@@ -1,9 +1,9 @@
 HANDINACCT = pn-cs456
 HANDINDIR = Asgn2
 HANDINFILES = "ftable.cpp Makefile vig.cpp README"
-CXXFLAGS = -Wall -ansi -g
+CXXFLAGS = -Wall -ansi
 
-all: ftable vig ic
+all: ftable vig ic kasiski
 
 ftable: ftable.o ic.o
 	g++ $(CXXFLAGS) $^ -lm -o ftable
