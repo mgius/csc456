@@ -1,5 +1,5 @@
 /* Mark Gius
- * Program 1: ftable
+ * Program 2: ftable
  * CSC456
  * Frequency analysis program for attacking ciphertexts
  */

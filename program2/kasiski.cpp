@@ -1,7 +1,7 @@
 /* Mark Gius
  * Program 2: kasiski
  * CSC456
- * Kasiski attack on vigenere cycle
+ * Kasiski attack on vigenere cipher
  */
 #include <iostream>
 #include <list>
@@ -33,6 +33,7 @@ struct matchRecord {
 
 	matchRecord(string s, set<int> locs) : str(s), locations(locs) {}
 
+   // To support sort()
 	bool operator<(matchRecord &other) {
 		if (str.length() != other.str.length()) {
 			return str.length() > other.str.length();
@@ -52,9 +53,9 @@ void usage(void) {
 
 #define BUFSIZE 1024
 /* reads and normalizes input 
- * returns count of valid characters in sanitized 
+ * returns count of valid characters in sanitized input
  *
- * sanitized pointer will be overwritten 
+ * sanitized pointer will be overwritten, caller is reponsible for freeing
  * */
 int readInput(int inFd, char **sanitized) {
    char *buf = (char *) malloc(BUFSIZE);
@@ -167,8 +168,6 @@ void printOutput(int outFd, list<matchRecord> &matchList) {
 int main(int argc, char **argv) {
    bool verbose = false;
    int minLength = 3;
-   // Ugh, I like using read(2), but it looks like I need to bounce through
-   // a stream, and you can lseek through stdin
    int inFd = STDIN_FILENO, outFd = STDOUT_FILENO;
 	char *sanitizedInput = NULL;
 	int charCount = 0;
@@ -232,7 +231,10 @@ int main(int argc, char **argv) {
 	// convert the map to the list
 	convertMapToList(&matchList);
 
+   // correctly formatted output
 	printOutput(outFd, matchList);
+
+   free(sanitizedInput);
 
    // clean up file descriptors
    if (inFd != STDIN_FILENO) {

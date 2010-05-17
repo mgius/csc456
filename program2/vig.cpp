@@ -1,6 +1,7 @@
 /* Mark Gius
  * CSC456
  * vig - vigenere enciphering/deciphering
+ * unmodified from program1
  */
 #include <ctype.h> // isalpha
 #include <fcntl.h> // open,

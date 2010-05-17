@@ -1,7 +1,11 @@
 /* this is something that was given to me in 305
 	Basically, it allows you to create c++ string objects
 	that are formatted using printf style rules
+
+   If you're familiar with perl's 'sprintf' function, this does the same
  */
+#ifndef FSTRING
+#define FSTRING
 #include <stdarg.h>
 #include <string>
 #include <stdio.h>
@@ -19,3 +23,4 @@ class FString : public std::string {
 			*(std::string *)this = std::string(buf);
 		}
 };
+#endif
