@@ -19,6 +19,7 @@
 #include <unistd.h> // read, write
 
 #include "ic.h"
+#include "FString.h"
 using namespace std;
 
 // map from string to list of locations, which contains all the
@@ -89,10 +90,11 @@ bool findMatchesOfLength(char *begin, int keySize) {
 	match[keySize] = '\0';
 
 	// loop from first char to two key lengths from the end
-	for (unsigned int i = 0; i <= strlen(begin) - keySize * 2; i++) {
+	for (int i = 0; i <= (int)strlen(begin) - keySize * 2; i++) {
+		//printf("outer loop %d\n", i);
 		bool foundOne = false;
 		// loop til the end of the cipher minus one key length
-		for (unsigned int j = i + keySize; j <= strlen(begin) - keySize; j++) {
+		for (int j = i + keySize; j <= (int)strlen(begin) - keySize; j++) {
 			if (0 == strncmp(begin + i, begin + j, keySize)) {
 				result = true;
 				//printf("Found a match at positions %d and %d\n", i, j);
@@ -131,6 +133,33 @@ void printOutput(int outFd, list<matchRecord> &matchList) {
 	string header("Length   Count  Word    Location (distance)\n");
 	header +=     "======   =====  ====    =========\n";
 	write(outFd, header.c_str(), header.length());
+	for(list<matchRecord>::iterator it = matchList.begin();
+		 it != matchList.end();
+		 it++) {
+		string line(FString("%6d   %5d  %s    ", (*it).str.length(),
+															  (*it).locations.size(),
+															  (*it).str.c_str()));
+		set<int>::iterator setIt = (*it).locations.begin();
+		int firstLoc = (*setIt);
+		setIt++;
+		int secondLoc = (*setIt);
+		setIt++;
+		line += FString("%d %d (%d) ", firstLoc, secondLoc,
+												 secondLoc - firstLoc);
+		
+
+		while (setIt != (*it).locations.end()) {
+			firstLoc = secondLoc;
+			secondLoc = (*setIt);
+			line += FString("%d (%d) ", secondLoc,
+												 secondLoc - firstLoc);
+
+			setIt++;
+		}
+		line += "\n";
+		write(outFd, line.c_str(), line.length());
+	}
+
 }
 
 int main(int argc, char **argv) {
@@ -202,12 +231,6 @@ int main(int argc, char **argv) {
 	convertMapToList(&matchList);
 
 	printOutput(outFd, matchList);
-	// This is the part where not using FILE * is going to bite me
-	for(list<matchRecord>::iterator it = matchList.begin();
-		 it != matchList.end();
-		 it++) {
-		
-	}
 
    // clean up file descriptors
    if (inFd != STDIN_FILENO) {

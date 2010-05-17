@@ -7,7 +7,7 @@
 #include <stdio.h>
 class FString : public std::string {
 	public:
-		FString(char *fmt, ...) {
+		FString(const char *fmt, ...) {
 			static const int bufLen = 1024;
 			static char buf[bufLen];
 			va_list args;
