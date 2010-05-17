@@ -20,16 +20,25 @@
 #include "ic.h"
 using namespace std;
 
-class matchComp {
-  operator() (string a, string b) {
-	  if (a.length() != b.length()) {
-		  return a.length() < b.length();
-	  }
-
-  }	  
 // map from string to list of locations, which contains all the
 // information I need to keep track of, but I can't sort it properly!
 map<string, list<int> > matches;
+
+// Enter the matchRecord, which I can sort properly
+struct matchRecord {
+	string str;
+	list<int> locations;
+
+	bool operator<(matchRecord &other) {
+		if (str.length() != other.str.length()) {
+			return str.length() < other.str.length();
+		}
+		if (locations.size() != other.locations.size()) {
+			return locations.size() < other.locations.size();
+		}
+		return str < other.str;
+	}
+};
 
 void usage(void) {
    printf("usage: kasiski [ -v ] [ -m length] [ infile [ outfile ] ]\n");
