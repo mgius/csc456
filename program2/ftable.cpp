@@ -124,18 +124,19 @@ int main(int argc, char **argv) {
    }
    free(inBuf);
 
+   printf("Total chars: %d\n", validChars);
    for (int i = 0; i < 26; i++) {
       string hist("");
       for (int j = 0; 
-            j < (int) (table[i] * 100.0 / validChars); j++) {
+            j < (int) ceil((table[i] * 100.0 / validChars)); j++) {
          hist += '*';
       }
-      printf("%c: %9d ( %05.2f%%) %s\n", 'A' + i, table[i], 
+      printf("%c: %9d ( %5.2f%%) %s\n", 'A' + i, table[i], 
                                          table[i] * 100.0 / validChars,
                                          hist.c_str());
    }
 
-   printf("Index of Coincidence: %05.4f\n", actualIC(validChars, table));
+   printf("\nIndex of Coincidence: %05.4f\n", actualIC(validChars, table));
 
    // clean up file descriptors
    if (inFd != STDIN_FILENO) {

@@ -1,7 +1,7 @@
 HANDINACCT = pn-cs456
 HANDINDIR = Asgn2
 HANDINFILES = "ftable.cpp Makefile vig.cpp README"
-CXXFLAGS = -Wall -ansi 
+CXXFLAGS = -Wall -ansi -O2
 
 all: ftable vig ic kasiski
 
