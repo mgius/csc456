@@ -9,9 +9,8 @@
 \textwidth 6in \textheight 8 in
 % That's about enough definitions
 
-\usepackage{multirow}
-\usepackage{tabularx}
-\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage{upgreek}
 
 \begin{document}
 \author{Mark Gius}
@@ -38,9 +37,6 @@ even number of characters
 \end{tabular}
 
 \item % Problem 2: # of keys
-I am assuming that the term ``Classical Cryptosystem'' refers to a system where
-the same key is used to encrypt and decrypt messages.
-
 Assuming that each person wants to communicate securely with everybody else,
 and each person is willing to send a separately encrypted message if a message
 needs to be sent to more than one person, then there will need to be one key
@@ -70,7 +66,71 @@ If the group of people in problem 2 were allowed to use a public key
 cryptosystem, the number of keys required would be $m * 2$. Each person would
 need their own Public key and their own Private key.
 
+\item % untrustworthy investors and stockbrokers
 
+With public key cryptography (and sufficiently strong keys), we can be 
+absolutely certain which person sent the messages.  Let us assume that all
+keys are sufficiently long that they cannot be trivially cracked, and that
+none of the private keys have been compromised. 
+
+Let us assume that the stockbrocker, Sally, is trying to boost his numbers by
+ordering stocks in the name of the investor, Ian.  If the investment firm's
+policy states that purchases can only be made by email signed by an investor,
+then we can easily determine whether or not Ian sent the order.  Because a
+message signed with one person's private key can only be decrypted by their
+public key, any orders that the stockbroker acts on must be decrypted using
+the public key.  Orders that are signed by any key other than Ian's private
+key will not decrypt using his public key, and Ian can plausibly deny having
+sent that order. 
+
+In the case where the investor has lost money and is trying to deny having
+sent the buy order, we can use the same policy as above to provide proof of an
+order having been requested.  Since only Ian can sign messages using his
+private key, any orders that can be succesfully decrypted using Ian's public
+key can be proven to have originated from him.
+
+So long as policy requires that all investor orders must be signed by the 
+investor's private key, the both parties in the exchange can be protected from
+fraudulent claims about the orders.
+
+\item % m = 10, e = 7, n = 55
+\[
+m = 10 \quad e = 7 \quad n = 55
+\]
+\begin{align*}
+m^e \bmod n & = m' \\
+10^7 \bmod 55 & = 10 \\
+m' & = 10
+\end{align*}
+
+\item % break above
+\[
+m = 10 \quad e = 7 \quad n = 55 \quad C = 35
+\]
+\begin{align*}
+n & = pq \\
+55 & = pq \\
+55 & = 5 * 11 \\
+p & = 5 \\
+q & = 11 \\
+\end{align*}
+\begin{align*}
+\upvarphi(n) & = (p - 1)(q - 1) \\
+\upvarphi(n) & = 4 * 10 \\
+\upvarphi(n) & = 40
+\end{align*}
+\begin{align*}
+ed & \equiv \pmod{40} \\
+7d & \equiv \pmod{40} \\
+7 * 23 & \equiv \pmod{40} \\
+d & = 23
+\end{align*}
+\begin{align*}
+C & = 35 \\
+C^d \bmod n & = M \\
+35^{23} \bmod 55 & = M \\
+30 & = M
+\end{align*}
 \end{enumerate}
 
 \end{document}
