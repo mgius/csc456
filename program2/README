@@ -1,0 +1,10 @@
+Mark Gius
+
+No special instructions
+
+There's a perl version which you aren't expected to grade (or even look at),
+but it's more elegant in some respects than the C++ version and was the 
+version I developed first, so any odd design decisions in the C++ version
+may be related to the fact that I developed the perl version first.
+
+Also, perl is awesome.
