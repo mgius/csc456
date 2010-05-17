@@ -3,6 +3,7 @@
  * CSC456
  * Kasiski attack on vigenere cycle
  */
+#include <iostream>
 #include <list>
 #include <map>
 #include <string>
@@ -18,48 +19,17 @@
 
 #include "ic.h"
 using namespace std;
-struct matchRecord {
-	string str;
-	list<int> locations;
-	int count;
 
-	matchRecord(string _str, int location) : 
-														str(_str), count(1) {
-		locations.push_back(location);
-	}
-};
+class matchComp {
+  operator() (string a, string b) {
+	  if (a.length() != b.length()) {
+		  return a.length() < b.length();
+	  }
 
-/* comparator for match records implemented as a function
- * 
- * Compares by string lenght, then count, then string
- */
-bool matchRecordComp(matchRecord *a, matchRecord *b) {
-	if (a->str.length() != b->str.length()) {
-		return a->str.length() < b->str.length();
-	}
-	if (a->count != b->count) {
-		return a->count < b->count;
-	}
-	return a->str < b->str;
-}
-
-/* Folding function for list::unique
- * If two elements are the same string, fold a into b (a will be removed)
- */
-bool matchRecordFold(matchRecord *a, matchRecord *b) {
-	if (a->str == b->str) {
-		b->locations.merge(a->locations);
-		b->count++;
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-list<matchRecord *> matches;
-
-
+  }	  
+// map from string to list of locations, which contains all the
+// information I need to keep track of, but I can't sort it properly!
+map<string, list<int> > matches;
 
 void usage(void) {
    printf("usage: kasiski [ -v ] [ -m length] [ infile [ outfile ] ]\n");
@@ -157,25 +127,6 @@ int main(int argc, char **argv) {
 	// Read in the chiphertext, stripping out invalid chars and 
 	// mapping to uppercase
 	charCount = readInput(inFd, &sanitizedInput);
-
-
-	matches.push_back(new matchRecord("test", 0));
-	matches.push_back(new matchRecord("test", 5));
-	printf("%s, %d, %d\n", matches.front()->str.c_str(), 
-								  matches.front()->count,
-								  matches.front()->locations.front());
-	printf("%s, %d, %d\n", matches.back()->str.c_str(), 
-								  matches.back()->count,
-								  matches.back()->locations.front());
-	matches.unique(matchRecordFold);
-
-	printf("%s, %d, %d\n", matches.front()->str.c_str(), 
-								  matches.front()->count,
-								  matches.front()->locations.front());
-	printf("%s, %d, %d\n", matches.back()->str.c_str(), 
-								  matches.back()->count,
-								  matches.back()->locations.back());
-	printf("Size %d\n", matches.size());
 
    // clean up file descriptors
    if (inFd != STDIN_FILENO) {
