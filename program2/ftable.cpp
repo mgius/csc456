@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "ic.h"
 using namespace std;
 
 // 1K buffer is reasonable for all but the most restrictive embedded systems
@@ -133,6 +134,8 @@ int main(int argc, char **argv) {
                                          table[i] * 100.0 / validChars,
                                          hist.c_str());
    }
+
+   printf("Index of Coincidence: %05.4f\n", actualIC(validChars, table));
 
    // clean up file descriptors
    if (inFd != STDIN_FILENO) {
