@@ -1,14 +1,19 @@
 #include <shadow.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <strings.h>
 #include <sys/types.h>
 #include <termios.h>
 #include <unistd.h>
 
 /* I picked group 50 because it's defined as "staff" on my system */
 #define STUDENTUID 1000
+#define STUDENTNAME "mgius"
 #define TARGETUSER 0
 #define TARGETGRP 50
+
+#define SALT_MAX 17
 
 /* Gets the current state of the STDIN FD 
    Caller is responsible for freeing returned pointer 
@@ -25,17 +30,23 @@ struct termios *getTerm() {
 /* sets the terminal to the passed termios.  
 	Caller is responsible for freeing passed pointer
  */
-void setTerm(struct termios *newTermTerm) {
-	if (0 != tcsetattr(STDIN_FILENO, TCSADRAIN, newTermTerm)) {
+void setTerm(struct termios *newTerm) {
+	if (0 != tcsetattr(STDIN_FILENO, TCSADRAIN, newTerm)) {
 		perror("setTerm - tcsetattr");
 		exit(1);
 	}
 }
 
+void getPassHash(char **pass, char **salt) {
+
+}
+
 int main(void) {
-	struct termios *old = NULL, *newTerm = NULL;
+	struct termios *oldTerm = NULL, *newTerm = NULL;
 	struct spwd *passEnt = NULL;
 	char *password = (char *) malloc(80);
+   char *hash = NULL;
+   char *salt = (char *)calloc(SALT_MAX,1);
 	size_t passLength = 0;
 
 	if (STUDENTUID != getuid()) {
@@ -44,8 +55,8 @@ int main(void) {
 	}
 	
 	/* disable echo for password entry */
-	old = getTerm(), newTerm = getTerm();
-	newTerm->c_iflag &= ~ECHO;
+	oldTerm = getTerm(), newTerm = getTerm();
+	newTerm->c_lflag &= ~ECHO;
 	setTerm(newTerm);
 
 	printf("Enter your password: ");
@@ -54,12 +65,32 @@ int main(void) {
 	if (0 > getline(&password, &passLength, stdin)) {
 		printf("Error while reading password");
 		/* make an attempt to restore the terminal */
-		setTerm(old);
+		setTerm(oldTerm);
 		exit(1);
 	}
+   printf("\n");
+   /* put the terminal back*/
+   setTerm(oldTerm);
 
-	passEnt = getspnam("mgius");
-	printf("%s\n", passEnt->sp_pwdp);
+   /* The fact that you can't specify a UID annoys me */
+	if (0 == (passEnt = getspnam(STUDENTNAME))) {
+      printf("Couldn't get ahold of your stored password\n"
+             "Program likely not running as root\n");
+      exit(1);
+   }
+         
+   /* Gets me the position of the beginning of the actual hash */
 
-	free(old), free(newTerm);
+   if (passEnt->sp_pwdp[0] == '$') {
+      hash = rindex(passEnt->sp_pwdp, '$') + 1;
+      strncpy(salt, passEnt->sp_pwdp, (int)(hash - passEnt->sp_pwdp));
+   }
+   else {
+      // using DES
+      hash = passEnt->sp_pwdp + 2;
+      strncpy(salt, passEnt->sp_pwdp, 2);
+   }
+
+	free(oldTerm), free(newTerm);
+   free(password);
 }
