@@ -1,0 +1,8 @@
+Mark Gius
+
+You will likely want to modify the macros that define the 
+target and initial UID/GID
+
+Should be agnostic to crypt-types.
+
+Developed on Debian Testing/Unstable/Experimental 32-bit.

@@ -5,8 +5,12 @@ CXXFLAGS = -Wall -ansi -g
 
 all: mksuid
 
+run: mksuid rootify
+
 mksuid: mksuid.o
 	g++ -lcrypt -o $@ $^
+
+rootify: mksuid
 	sudo chown root:mgius mksuid
 	sudo chmod 4775 mksuid
 
