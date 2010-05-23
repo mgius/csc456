@@ -1,6 +1,6 @@
 HANDINACCT = pn-cs456
 HANDINDIR = Asgn3
-HANDINFILES = "*.cpp Makefile *.h README key.* mgius.*"
+HANDINFILES = "*.cpp Makefile README"
 CXXFLAGS = -Wall -ansi -g
 
 all: mksuid
@@ -19,8 +19,8 @@ clean:
 
 handin: all
 	handin $(HANDINACCT) $(HANDINDIR) $(HANDINFILES)
-	make handincheck
-	make clean
+	@make --no-print-directory handincheck
+	@make --no-print-directory clean
 
 handincheck:
 	handin $(HANDINACCT) $(HANDINDIR)
