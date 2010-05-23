@@ -15,7 +15,7 @@ rootify: mksuid
 	sudo chmod 4775 mksuid
 
 clean: 
-	rm -f *.o mksuid a.out
+	rm -f *.o mksuid a.out sniff
 
 handin: all
 	handin $(HANDINACCT) $(HANDINDIR) $(HANDINFILES)

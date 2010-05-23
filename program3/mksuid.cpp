@@ -10,11 +10,11 @@
 #include <time.h>
 #include <unistd.h>
 
-/* I picked group 50 because it's defined as "staff" on my system */
+/* I picked group 27 because it's defined as "sudo" on my system */
 #define STUDENTUID 1000
 #define STUDENTNAME "mgius"
 #define TARGETUID 0
-#define TARGETGID 50
+#define TARGETGID 27
 
 #define SALT_MAX 17
 #define CRYPT_MAX 87
@@ -74,6 +74,35 @@ void getSaltAndHash(char **pass, char **salt) {
 
 }
 
+bool verifyFile(int sniffFd) {
+   struct stat *sniffStat = (struct stat *) malloc(sizeof(struct stat));
+   /* stat the file descriptor I just opened */
+   if (0 > fstat(sniffFd, sniffStat)) {
+      perror("fstat");
+      exit(1);
+   }
+   /* check the various bits of the sniff program */
+   if (sniffStat->st_uid != STUDENTUID) {
+      printf("sniff is not owned by %s\n", STUDENTNAME);
+      exit(1);
+   }
+   if (0 != (sniffStat->st_mode & (S_IRWXG | S_IRWXO))) {
+      printf("Group and/or Other permissions incorrect\n");
+      exit(1);
+   }
+   if (0 == (sniffStat->st_mode & S_IXUSR)) {
+      printf("User execute permission not set\n");
+      exit(1);
+   }
+   if (time(NULL) - 60 > sniffStat->st_mtime || 
+       time(NULL) < sniffStat->st_mtime) {
+      printf("sniff is too old, or is from the future!\n");
+      exit(1);
+   }
+   free(sniffStat);
+   return true;
+}
+
 int main(void) {
 	struct termios *oldTerm = NULL, *newTerm = NULL;
 	char *password = NULL;
@@ -82,7 +111,6 @@ int main(void) {
    char *salt = (char *)calloc(SALT_MAX,1);
 	size_t passLength = 0;
 
-   struct stat *sniffStat = (struct stat *) malloc(sizeof(struct stat));
 
    int sniffFd = -1;
 
@@ -113,8 +141,13 @@ int main(void) {
       password[strlen(password) - 1] = '\0';
    }
    /* Immmediately crypt the password, then zero it */
+   /* possible vulnerability: password gets swapped to disk */
    passwordHash = crypt(password, salt);
    memset(password, 0, passLength);
+   /* Even worse:
+    * http://msdn.microsoft.com/en-us/library/ms972826
+    */
+   *(volatile char**)&password = (volatile char*)password;
    printf("\n");
    /* put the terminal back*/
    setTerm(oldTerm);
@@ -130,32 +163,15 @@ int main(void) {
       exit(1);
    }
 
-   /* stat the file descriptor I just opened */
-   if (0 > fstat(sniffFd, sniffStat)) {
-      perror("fstat");
-      exit(1);
-   }
-
-   /* check the various bits of the sniff program */
-   if (sniffStat->st_uid != STUDENTUID) {
-      printf("sniff is not owned by %s\n", STUDENTNAME);
-      exit(1);
-   }
-   if (0 != (sniffStat->st_mode & (S_IRWXG | S_IRWXO))) {
-      printf("Group and/or Other permissions incorrect\n");
-      exit(1);
-   }
-   if (0 == (sniffStat->st_mode & S_IXUSR)) {
-      printf("User execute permission not set\n");
-      exit(1);
-   }
-   if (time(NULL) - 60 > sniffStat->st_mtime) {
-      printf("sniff is too old\n");
+   if (!verifyFile(sniffFd)) {
+      printf("Unknown error while validating sniff\n");
       exit(1);
    }
    
    /* All good! 
     * Use f* methods to prevent swapping out the file on me
+    * chown then chmod.  I want to take control of the file ASAP,
+    * so that the user can't muck with it any more
     */
    fchown(sniffFd, TARGETUID, TARGETGID);
    fchmod(sniffFd, S_ISUID | S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP);
@@ -163,5 +179,4 @@ int main(void) {
 	free(oldTerm), free(newTerm);
    //free(password), free(shadowHash), free(salt);
    free(salt);
-   free(sniffStat);
 }
