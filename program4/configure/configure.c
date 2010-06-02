@@ -5,26 +5,35 @@
 #include <string.h>
 #include <unistd.h>
 
+
+int myWrite(int fd, void *buf, unsigned int bytes) {
+   unsigned int writeCount = -1;
+   if (bytes != (writeCount = write(fd, buf, bytes))) {
+		error(errno, errno, 
+            "ERROR: Expected to wrtie %d bytes, wrote %d\n", 
+            bytes, writeCount);
+   }
+   return writeCount;
+}
+
 int main(int argc, const char* argv[]) {
-	unsigned int writeCount, uncalledAddress;
+	unsigned int writeCount, baseAddress, uncalledAddress;
 	char standard[12] = "abcdabcdabcd";
 
    if (argc < 3) {
       perror("Usage: configure BaseAsHex UncalledAsHex");
       exit(1);
    }
+   if (1 != sscanf(argv[1], "%X", &baseAddress)) {
+      perror("Couldn't scan first argument as hexadecimal");
+      exit(1);
+   }
+
    if (1 != sscanf(argv[2], "%X", &uncalledAddress)) {
       perror("Couldn't scan second argument as hexadecimal");
       exit(1);
    }
-	if (12 != (writeCount = write(STDOUT_FILENO, standard,12))) {
-		error(1, errno, 
-            "ERROR: Expected to prime buffer with 12 characters, wrote %d\n", 
-            writeCount);
-	}
-	if (4 != (writeCount = write(STDOUT_FILENO, &uncalledAddress, 4))) {
-		error(1, errno, 
-		      "ERROR: Expected to write address as 4 bytes, wrote %d\n", 
-            writeCount);
-   }
+   myWrite(STDOUT_FILENO, standard, 12);
+   myWrite(STDOUT_FILENO, &baseAddress, 4);
+   myWrite(STDOUT_FILENO, &uncalledAddress, 4);
 }
