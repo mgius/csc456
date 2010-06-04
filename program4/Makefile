@@ -1,9 +1,11 @@
 HANDINACCT = pn-cs456
 HANDINDIR = Asgn4
-HANDINFILES = "*.c Makefile README"
+HANDINFILES = "*.c Makefile README smashme"
 CFLAGS = --std=gnu99 -g
 
-all: smashme
+all: smashme configure
+
+configure: configure.o
 
 smashme: smashme.o
 	$(CC) -o $@ $^

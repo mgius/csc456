@@ -1,0 +1,11 @@
+Mark Gius
+Shawn Robertson
+
+smashme binary compiled on lab machine 303x19.csc.calpoly.edu
+Should run on any lab machine.  
+
+I was not able to run this exploit on my debian machine, but I honestly
+didn't try very hard.
+
+An exploit script is present, but may need to be customized to the
+return address if smashme is recompiled
