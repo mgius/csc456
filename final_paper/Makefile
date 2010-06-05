@@ -13,9 +13,9 @@
 #
 SHELL = /bin/sh
 
-MAIN  = outline
+MAIN  = final_paper
 
-TEXFILES = outline.tex 
+TEXFILES = final_paper.tex 
 
 LATEX   = latex
 
