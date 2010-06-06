@@ -2,14 +2,6 @@
 
 \usepackage{fullpage} % does reasonable things
 \usepackage{setspace} % allows double spacing
-% Use wide margins, but not quite so wide as fullpage.sty
-% \marginparwidth 0.5in 
-% \oddsidemargin 0.25in 
-% \evensidemargin 0.25in 
-%\marginparsep 0.25in
-%\topmargin 0.25in 
-%\textwidth 6.5in \textheight 9.0in
-% That's about enough definitions
 
 \begin{document}
 \title{``Frozen'' Linux}
@@ -51,18 +43,18 @@ In these scenarios, the public systems are often configured to disallow
 installing hardware.
 
 The locked down nature of these public machines has consequences, however.
-Sometimes users intend to use these public or borrowed systems for
-purposes that the administrator had not anticipated.  While most users 
-use the public systems for web browsing, an up-and-coming musician may want
-to save money by checking out a laptop every week to record music.  The 
-musician will need a number of software and hardware settings that are not
-common.  Ordinarily, this use case would be unsupported, due to being 
-configured in a ``least-priviledge'' mode.  However, if it were possible to quickly
-and easily revert changes made by the users, it could be possible to 
-allow any user full administrative priviledges over the checked out or 
-public machine.  In this way, the musician can use public resources exactly
-how he wishes, and the technicians running the shared laptop program can
-trivially restore the laptops to a known good state.
+Sometimes users intend to use these public or borrowed systems for purposes
+that the administrator had not anticipated.  While most users use the public
+systems for web browsing, an up-and-coming musician may want to save money by
+checking out a laptop every week to record music.  The musician will need a
+number of software and hardware settings that are not common.  Ordinarily, this
+use case would be unsupported, due to being configured in a
+``least-priviledge'' mode.  However, if it were possible to quickly and easily
+revert changes made by the users, it could be possible to allow any user full
+administrative priviledges over the checked out or public machine.  In this
+way, the musician can use public resources exactly how he wishes, and the
+technicians running the shared laptop program can trivially restore the laptops
+to a known good state.
 
 I set out to create a system whereby systems with administrative access
 can be given to well-meaning users with advanced needs, without compromising
@@ -115,26 +107,30 @@ The behavior that the user would see is a fresh, consistent system on every
 reboot, no matter what happens between boots.
 
 \subsection{The ``Scratch'' Disk}
-
 When choosing the filesystem to be mounted ``over'' the real root filesystem
 (the ``scratch'' disk), I looked into two broad categories.  The first were
 traditional linux filesystems, such as ext3 and JFS, and the second were
-snapshotting filesystems, such as btrfs and nilfs2.  
+snapshotting filesystems, such as nilfs2.  
 
-% TODO: this is awkwardly phrased.  Fix it
-What I had hoped to achieve with a snapshotting filesystem was the ability for
-an administrator to easily and trivially update the state of the system
-trivially.  By throwing away snapshots of the filesystem after each reboot, the
-system could be reverted to a known good state, and by changing the number of
-snapshots that are retained after each reboot.  Unfortunately, snapshotting
-filesystems don't work like this.  When snapshots and checkpoints are removed
-from the filesystem the current state of the filesystem is unchanged.  What
-\emph{has} changed is that the intermediate states of the filesystem have been
-removed.  
+I investigated the nilfs filesystem as a possible avenue for the scratch disk,
+hoping to use it's snapshotting and checkpoint features to allow an
+administrator to easily modify the current state of the system without
+significant effort.  With a snapshotting filesystem, an administrator could
+make changes or updates to the system then create a snapshot.  The boot-time
+reversion, instead of wiping away all the data on the filesystem, would simply
+revert to the lastest snapshot.
 
-In the end, I ended up choosing JFS as my overlaid filesystem.  Based on my
-previous experiences with Linux filesystems, I chose JFS because of its general
-speed, especially in regard to large files, and its speed in formatting.  JFS
+Unfortuneately, nilfs does not support this operation.  While nilfs does
+support checkpoints and snapshots, as well as mounting those intermediate
+points, it does not support read-write mounting of snapshots.  Even worse, when
+snapshots and checkpoints are deleted, the current state of the filesystem in
+unchanged, only the intermediate points are expunged from the filesystem. As a
+result, nilfs offered no advantages over a traditional filesystem, and I
+decided not to use it.
+
+In the end, I chose JFS as my overlaid filesystem.  Based on my previous
+experiences with Linux filesystems, I chose JFS because of its general speed,
+especially in regard to large files, and its speed in formatting.  JFS
 filesystems, even with extremely large disks of 1TB or more, format in a time
 on the order of seconds.  Because the scratch disk will be reformatted after
 every reboot, I felt that minimizing the amount of time necessary for each

@@ -17,6 +17,8 @@ MAIN  = final_paper
 
 TEXFILES = final_paper.tex 
 
+BIBFILES = final_paper
+
 LATEX   = latex
 
 PS    = dvips
@@ -51,6 +53,7 @@ print: $(MAIN).ps
 	lpr -h $(MAIN).ps
 
 %.dvi:  %.tex $(TEXFILES)
+	@echo "  Running BibTeX"
 	@echo "	Running LaTeX"
 	@if latex $< | tee /dev/tty | fgrep -is rerun; then 	\
 		echo "	Rerunning LaTeX";			\
@@ -58,6 +61,9 @@ print: $(MAIN).ps
 			echo "  Re-Rerunning LaTeX";            \
 		done;                                           \
 	fi
+	bibtex $(BIBFILES)
+	$(LATEX) $<
+  
 
 %.ps: %.dvi
 	$(PS) $(PSFLAGS) $(MAIN).dvi > $(MAIN).ps
