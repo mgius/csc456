@@ -50,27 +50,27 @@ checking out a laptop every week to record music.  The musician will need a
 number of software and hardware settings that are not common.  Ordinarily, this
 use case would be unsupported, due to being configured in a
 ``least-priviledge'' mode.  However, if it were possible to quickly and easily
-revert changes made by the users, it could be possible to allow any user full
+revert changes made by the users, it would be reasonable to allow any user full
 administrative priviledges over the checked out or public machine.  In this
 way, the musician can use public resources exactly how he wishes, and the
 technicians running the shared laptop program can trivially restore the laptops
 to a known good state.
 
-I set out to create a system whereby systems with administrative access
-can be given to well-meaning users with advanced needs, without compromising
-the integrity of the shared systems. 
+I set out to create a system whereby systems with administrative access enabled
+can be provided to well-meaning users with advanced needs, without compromising
+the long-term integrity of the shared systems. 
 
 \section{Possible Implementations}
-There are many possible avenues with which such as system can be implemented.
+There are many possible avenues for implementing such a system.
 
-One such possibility is by distributing systems who boot off Linux LiveCDs.
-This option has a number of drawbacks which make it a poor choice for my goal
-of the system performing like a normal desktop PC.  For one, LiveCDs save all
-temporary changes to an in-RAM filesystem, limiting the amount of usable space
-to do work.  In the case of the musician, the music editing software (both on
-disk and the running memory usage) and the recorded music files will all
-share the same limited amount of space.  Without significant quantities of RAM,
-the machines would not be usable by certain classes of users.
+One possibility is to distribute systems that boot from Linux LiveCDs, instead
+of the local hard disk.  This option has a number of drawbacks which make it a
+poor choice for the aspiring musician. For one, LiveCDs save all temporary
+changes to an in-RAM filesystem, limiting the amount of usable space to do
+work.  In the case of the musician, the music editing software (both on disk
+and the running memory usage) and the recorded music files will all share
+the same limited amount of space.  Without significant quantities of RAM, the
+machines would not be usable by certain classes of users.
 
 Another solution could keep a known good state on disk, with the ability to
 intiate a ``re-image'' process to restore the system to a known-good state.
@@ -78,7 +78,7 @@ This would meet the requirements of our musician, but restoring the system
 to a known-good state would be non-trivial and potentially time-consuming 
 depending on the size of the disks.  Ideally, our system would support 
 instant (or nearly so) reversion, in a manner that was trivial for a user
-to initiate.
+or administrator to initiate.
 
 A better solution uses a modified form of the filesystem that most Linux 
 LiveCDs present. Normally, a LiveCD merges its known-good CD filesystem 
@@ -107,10 +107,10 @@ The behavior that the user would see is a fresh, consistent system on every
 reboot, no matter what happens between boots.
 
 \subsection{The ``Scratch'' Disk}
-When choosing the filesystem to be mounted ``over'' the real root filesystem
-(the ``scratch'' disk), I looked into two broad categories.  The first were
-traditional linux filesystems, such as ext3 and JFS, and the second were
-snapshotting filesystems, such as nilfs2.  
+When choosing the filesystem for the ``scratch disk'', or the filesystem that
+is mounted ``over'' the real root filesystem, I looked into two broad
+categories.  The first were traditional linux filesystems, such as ext3 and
+JFS, and the second were snapshotting filesystems, such as nilfs2.  
 
 I investigated the nilfs filesystem as a possible avenue for the scratch disk,
 hoping to use it's snapshotting and checkpoint features to allow an
@@ -120,10 +120,10 @@ make changes or updates to the system then create a snapshot.  The boot-time
 reversion, instead of wiping away all the data on the filesystem, would simply
 revert to the lastest snapshot.
 
-Unfortuneately, nilfs does not support this operation.  While nilfs does
+Unfortunately, nilfs does not support this kind of reversion.  While nilfs does
 support checkpoints and snapshots, as well as mounting those intermediate
 points, it does not support read-write mounting of snapshots.  Even worse, when
-snapshots and checkpoints are deleted, the current state of the filesystem in
+snapshots and checkpoints are deleted, the current state of the filesystem is
 unchanged, only the intermediate points are expunged from the filesystem. As a
 result, nilfs offered no advantages over a traditional filesystem, and I
 decided not to use it.
@@ -138,7 +138,7 @@ reboot would be beneficial.
 
 \subsection{Kernel and Initial Ram Disk}
 
-Initially, I had hoped to use a stock Ubuntu kernel.  However, after some
+Initially, I had hoped to use a stock Ubuntu kernel.  After some
 experimentation I decided to compile my own kernel, even though the Ubuntu
 kernel supports the AUFS filesystem.  The two compelling factors for compiling
 my own kernel were filesystem support and userspace tools support.  The stock
@@ -171,7 +171,7 @@ scratch disk, mount the real root and scratch disk in temporary locations, then
 union mount those two filesystems using AUFS in the location that the script
 would normally place the real root filesystem.  The result of these
 interactions is that the root filesystem that the initrd eventually hands off
-to init is the AUFS filesystem.
+to the system's init is the merged AUFS filesystem.
 
 % TODO: more here?
 
@@ -196,16 +196,16 @@ a filesystem twice.  Although there are mount options that allow you to
 ``mount'' a filesystem in multiple locations (bind, remount), 
 these options require access to theactual mount point of the filesystem to 
 be multiply mounted. Because the true mount point of the root filesystem is
-not visible after the initial ram disk calls init, it becomes much harder to
-exploit this vulnerability in this manner.
+not visible after the initial ram disk calls init it becomes much harder to
+exploit this vulnerability in this manner, although by no means impossible.
 
-Another exploit of this vulnerability involves duplicating the filesystem on 
-the disk using the \emph{dd} command.  After mounting the duplicated system
-and making modifications, the attacker could then write the modified 
-filesystem back to disk.  While I have been unable to exploit this 
-vulnerability myself (it often leaves the filesystem in an unmountable state),
-a dedicated attacker could eventually develop a technique for reliably 
-exploiting this vulnerability.
+Another exploit of this vulnerability involves duplicating the filesystem on
+the disk using the \emph{dd} command.  After mounting the duplicated system and
+making modifications, the attacker could then write the modified filesystem
+back to disk.  While I have been unable to exploit this vulnerability myself
+(it often leaves the filesystem in a dirty or unmountable state), a dedicated
+attacker could eventually develop a technique for reliably exploiting this
+vulnerability.
 
 The second vulnerability revolves around the boot loader.  By default, the 
 GRUB boot loader does not have a password, and allows users to edit the boot
