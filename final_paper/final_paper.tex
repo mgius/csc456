@@ -226,18 +226,26 @@ would be easily fooled by a well crafted attack.
 
 \section{Future Improvements}
 One significant improvement that could be made would be to use a snapshotting
-filesystem that supports reversion, instead of JFS.  None of the snapshotting
-filesystems that I tested supported this functionality, but the behavior could
-likely be patched in. By doing this, the administrator could create a new
-default snapshot that would be reverted to after each reboot.  
+filesystem that supports reversion for the scratch disk, instead of JFS.  None
+of the snapshotting filesystems that I tested supported this functionality, but
+the behavior could most likely be patched in. By doing this, the administrator
+could create a new default snapshot that would be reverted to after each
+reboot, greatly reducing the complexity of updating the base image.
 
 Another option would be to implement the entire system as a kernel block
 device.  Instead of using a union at the filesystem level, the union would
-occur between two devices.  This would improve security dramatically, as the
-unioned block device would be presented through \emph{devfs} instead of the
-real block devices, and the merged block devices could be removed.
+occur between two disks or partitions.  This would improve security
+dramatically, as the unioned block device would be presented through
+\emph{devfs} instead of the real block devices, and the merged block devices
+could be removed.
 
-\nocite{5350011,1520898,4595934}
+\section{Conclusion}
+The proposed implementation greatly improves the usability of public use
+terminals, especially public access laptops such as those provided by many
+public libraries.  The system has much room for improvement, especially in
+regard to preventing malicious attacks and ease of upgrade.  
+
+\nocite{*}
 \newpage
 
 \bibliographystyle{plain}
